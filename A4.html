@@ -53,17 +53,27 @@
 		var oldx = rectx;
 		var oldy = recty;
 		 
-		 
+		function initCollision()
+		{
+			var p1 = new Point(rectx, recty);
+			var p2 = new Point(rectx + rectImage.width, recty);
+			var wall = new Line(p1, new vec2d(1, 0));
+			findCollision(p1, p2, wall);
+		}
+		
+		
 		function findCollision(p1, p2, wall)
 		{
 			t = 0;
 			circle = new Circle(new Point(ballx,bally),16);
-			T = circleSegmentCollision(circle, wall, p1, p2, velocity); // KEEP THE TIME POSITIVE
-			console.log(T);
+			var newT = circleSegmentCollision(circle, wall, p1, p2, velocity.mul(-1)); // KEEP THE TIME POSITIVE
+			if ((newT < Number.POSITIVE_INFINITY) && (newT < 0))
+				T = newT;
 		}
 		 
 		function wallBounce(wall)
 		{
+			t = 0;
 			var n = wall.dirVec.perp();
 			var px = velocity.x * n.x;
 			var py = velocity.y * n.y;
@@ -84,6 +94,7 @@
 				///REPLACING vy AND vx WITH velocity VECTOR
 				velocity = new vec2d(Math.random()-.5, vinity);
 				///THE BALL RESET, FIND A NEW COLLISION TIME
+				initCollision();
 			}
 		
 			if (bgReady) {
@@ -97,6 +108,13 @@
 			if (rectReady) {
 				ctx.drawImage(rectImage, rectx, recty);
 			}
+			
+			if (t >= Math.abs(T))
+			{
+				T = Number.POSITIVE_INFINITY;
+				wallBounce(new Line(new Point(rectx, recty), new vec2d(1, 0)));
+			}
+			
 		}, vinity);
 		   
 		window.onload = function() 
@@ -110,9 +128,10 @@
 			
 					if(newx >= 0 && newx <= rectx+rectImage.width) 
 					{
-						///THE PADDLE MOVED, FIND A NEW COLLISION TIME
 						rectx = newx; 
 						oldx = rectx;
+						///THE PADDLE MOVED, FIND A NEW COLLISION TIME
+						initCollision();
 					}
 				}
 			}
