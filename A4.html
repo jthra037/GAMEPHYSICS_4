@@ -51,9 +51,15 @@
 		var oldy = recty;
 		 
 		 
-		function wallBounce(thisWall)
+		function findCollision(p1, p2, wall)
 		{
-			var n = thisWall.dirVec.perp();
+			circle = new Circle(new Point(ballx,bally),16);
+			t = circleSegmentCollision(circle, wall, p1, p2, velocity); // KEEP THE TIME POSITIVE
+		}
+		 
+		function wallBounce(wall)
+		{
+			var n = wall.dirVec.perp();
 			var px = velocity.x * n.x;
 			var py = velocity.y * n.y;
 			var P = new vec2d(px, py);
