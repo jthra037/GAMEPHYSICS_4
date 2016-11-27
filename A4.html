@@ -68,9 +68,9 @@
 			var bottomRight = new Point (game.width, game.height);
 			// CHECK EVERYTHING RIGHT NOW
 			findCollision(p1, p2, wall);
-			findCollision(bottomRight, topRight, new vec2d(0, 1));
-			findCollision(topRight, topLeft, new vec2d(-1, 0));
-			findCollision(topLeft, bottomLeft, new vec2d(0, -1));
+			findCollision(bottomRight, topRight, new Line(bottomRight, new vec2d(0, 1)));
+			findCollision(topRight, topLeft, new Line(topRight , new vec2d(-1, 0)));
+			findCollision(topLeft, bottomLeft, new Line(topLeft , new vec2d(0, -1)));
 		}
 		
 		
