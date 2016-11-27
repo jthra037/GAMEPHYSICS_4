@@ -26,6 +26,9 @@
 		var vinitx = Math.random()-.5; // velocity along x axis
 		var velocity = new vec2d(vinitx, vinity);
 		
+		var T = Number.POSITIVE_INFINITY;
+		var t = 0;
+		
 		var a = 0; // acceleration
         bgImage.src = "images/bg.jpg";
 		ballimage.src = "images/ball.png";
@@ -53,8 +56,10 @@
 		 
 		function findCollision(p1, p2, wall)
 		{
+			t = 0;
 			circle = new Circle(new Point(ballx,bally),16);
-			t = circleSegmentCollision(circle, wall, p1, p2, velocity); // KEEP THE TIME POSITIVE
+			T = circleSegmentCollision(circle, wall, p1, p2, velocity); // KEEP THE TIME POSITIVE
+			console.log(T);
 		}
 		 
 		function wallBounce(wall)
@@ -69,6 +74,7 @@
 		
 		var render = setInterval(function() 
 		{
+			++t;
 			bally = bally + velocity.y;
 			ballx = ballx + velocity.x;
 			//bally = 32 + (Math.random() * (game.height - 64));
