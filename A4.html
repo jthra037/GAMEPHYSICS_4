@@ -57,15 +57,16 @@
 		
 		function initCollision()
 		{
+			// GET DATA FOR PLATFORM
 			var p1 = new Point(rectx, recty);
 			var p2 = new Point(rectx + rectImage.width, recty);
 			var wall = new Line(p1, new vec2d(1, 0));
-			
+			// GET DATA FOR WALLS
 			var bottomLeft = new Point(0, game.height);
 			var topLeft = new Point (0, 0);
 			var topRight = new Point (game.width, 0);
 			var bottomRight = new Point (game.width, game.height);
-			
+			// CHECK EVERYTHING RIGHT NOW
 			findCollision(p1, p2, wall);
 			findCollision(bottomRight, topRight, new vec2d(0, 1));
 			findCollision(topRight, topLeft, new vec2d(-1, 0));
@@ -95,6 +96,7 @@
 			var v2 = velocity.add(P.mul(-2));
 			velocity = v2; /// THIS LINE IS SPECIAL IT CHANGES THE WAY THE BALL MOVES
 			///IF VELOCITY CHANGES WE NEED TO CHECK ALL 4 POSSIBLE OBJECTS FOR COLLISION
+			initCollision();
 		}
 		
 		var render = setInterval(function() 
