@@ -1,6 +1,10 @@
 <!doctype html>
 <html>
-   <head></head>
+   <head>
+   <script src = "vector2d.js"></script>
+   <script src = "geom2d.js"></script>
+   <script src = "physics2d.js"></script>
+   </head>
    <body>
       <canvas id="game"></canvas>
 
@@ -17,63 +21,81 @@
 		var ballimage = new Image();
 		var rectImage = new Image();
 		var ballx,bally;
+		///REPLACING vy AND vx WITH velocity VECTOR
         var vinity = 2; // velocity along y axis
 		var vinitx = Math.random()-.5; // velocity along x axis
 		var vy = vinity;
 		var vx = vinitx;
+		var velocity = new vec2d(vinitx, vinity);
+		
 		var a = 0; // acceleration
         bgImage.src = "images/bg.jpg";
 		ballimage.src = "images/ball.png";
 		rectImage.src = "images/rectangle.png"
-        bgImage.onload = function () {
-           bgReady = true;
-        }
-		ballimage.onload = function () {
-           ballReady = true;
-        }
-		rectImage.onload = function()  {
-		   rectReady = true;
-		   
+		
+		bgImage.onload = function () {
+			bgReady = true;
 		}
+		
+		ballimage.onload = function () {
+			ballReady = true;
+		}
+		
+		rectImage.onload = function()  {
+			rectReady = true;
+		}
+		
 		bally = 32;
 		ballx = 32 + (Math.random() * (game.width - 64));
         var rectx = 500;
 		var recty = 670;
 		var oldx = rectx;
 		var oldy = recty;
-		var render = setInterval(function() {
-		   bally = bally + vy;
-		   ballx = ballx + vx;
-           //bally = 32 + (Math.random() * (game.height - 64));
-		   if (bally >= game.height-32 || (ballx <= 32 ) || (ballx >= game.width-32)) {
-		   	   ballx = 32 + (Math.random() * (game.width - 64));
-		       bally = 32;
-			   vy = vinity;
-			   vx = Math.random()-.5;
-		   }
-		   if (bgReady) {
-              ctx.drawImage(bgImage, 0, 0);
-           }
-           if (ballReady) {
-              ctx.drawImage(ballimage, ballx, bally);
-           }
-		   if (rectReady) {
-		      ctx.drawImage(rectImage, rectx, recty);
-		   }
-		   }, vinity);
+		
+		var render = setInterval(function() 
+		{
+			bally = bally + ;
+			ballx = ballx + vx;
+			//bally = 32 + (Math.random() * (game.height - 64));
+			if (bally >= game.height-32 || (ballx <= 32 ) || (ballx >= game.width-32)) {
+				ballx = 32 + (Math.random() * (game.width - 64));
+				bally = 32;
+			///REPLACING vy AND vx WITH velocity VECTOR
+			vy = vinity;
+			vx = Math.random()-.5;
+			velocity = (Math.random()-.5, vinity);
+			}
+		
+			if (bgReady) {
+				ctx.drawImage(bgImage, 0, 0);
+			}
+			
+			if (ballReady) {
+				ctx.drawImage(ballimage, ballx, bally);
+			}
+			
+			if (rectReady) {
+				ctx.drawImage(rectImage, rectx, recty);
+			}
+		}, vinity);
 		   
-		   window.onload = function() {
-		     document.onmousemove = function(e) {
-			   if (e.which == 1) {
-			       var newx = e.pageX;
-				   var newy = e.pageY;
-				   if(newy >= recty && newy <= recty+rectImage.height && newx >= 0 && newx <= rectx+rectImage.width) {
-					       rectx = newx; 
-						   oldx = rectx;
-				   }
-    }
-			 }
-		   }
+		window.onload = function() 
+		{
+			document.onmousemove = function(e) 
+			{
+				if (e.which == 1) 
+				{
+					var newx = e.pageX;
+					var newy = e.pageY;
+			
+					if(newy >= recty && newy <= recty+rectImage.height && newx >= 0 && newx <= rectx+rectImage.width) 
+					{
+						rectx = newx; 
+						oldx = rectx;
+					}
+				}
+			}
+		}
       </script>
    </body>
 
