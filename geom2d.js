@@ -15,10 +15,6 @@ function Point(x,y) {
 		var yd = this.y - otherPt.y;
 		return Math.sqrt(xd*xd+yd*yd);
 	}
-	this.add = function(vec) 
-	{
-		return new Point(this.x + vec.x, this.y + vec.y);
-	}
 }
 
 function Vec(tail,head) {
