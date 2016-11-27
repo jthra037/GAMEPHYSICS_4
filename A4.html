@@ -28,6 +28,7 @@
 		
 		var T = Number.POSITIVE_INFINITY;
 		var t = 0;
+		var collisionWall;
 		
 		var a = 0; // acceleration
         bgImage.src = "images/bg.jpg";
@@ -68,13 +69,14 @@
 			circle = new Circle(new Point(ballx,bally),16);
 			var newT = circleSegmentCollision(circle, wall, p1, p2, velocity.mul(-1)); // KEEP THE TIME POSITIVE
 			if ((newT < Number.POSITIVE_INFINITY) && (newT < 0))
+				collisionWall = wall;
 				T = newT;
 		}
 		 
-		function wallBounce(wall)
+		function wallBounce()
 		{
 			t = 0;
-			var n = wall.dirVec.perp();
+			var n = collisionWall.dirVec.perp();
 			var px = velocity.x * n.x;
 			var py = velocity.y * n.y;
 			var P = new vec2d(px, py);
