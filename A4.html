@@ -24,8 +24,6 @@
 		///REPLACING vy AND vx WITH velocity VECTOR
         var vinity = 2; // velocity along y axis
 		var vinitx = Math.random()-.5; // velocity along x axis
-		var vy = vinity;
-		var vx = vinitx;
 		var velocity = new vec2d(vinitx, vinity);
 		
 		var a = 0; // acceleration
@@ -54,16 +52,15 @@
 		
 		var render = setInterval(function() 
 		{
-			bally = bally + ;
-			ballx = ballx + vx;
+			bally = bally + velocity.y;
+			ballx = ballx + velocity.x;
 			//bally = 32 + (Math.random() * (game.height - 64));
 			if (bally >= game.height-32 || (ballx <= 32 ) || (ballx >= game.width-32)) {
 				ballx = 32 + (Math.random() * (game.width - 64));
 				bally = 32;
-			///REPLACING vy AND vx WITH velocity VECTOR
-			vy = vinity;
-			vx = Math.random()-.5;
-			velocity = (Math.random()-.5, vinity);
+				///REPLACING vy AND vx WITH velocity VECTOR
+				velocity = new vec2d(Math.random()-.5, vinity);
+				///THE BALL RESET, FIND A NEW COLLISION TIME
 			}
 		
 			if (bgReady) {
@@ -90,6 +87,7 @@
 			
 					if(newy >= recty && newy <= recty+rectImage.height && newx >= 0 && newx <= rectx+rectImage.width) 
 					{
+						///THE PADDLE MOVED, FIND A NEW COLLISION TIME
 						rectx = newx; 
 						oldx = rectx;
 					}
