@@ -60,17 +60,26 @@
 			var p1 = new Point(rectx, recty);
 			var p2 = new Point(rectx + rectImage.width, recty);
 			var wall = new Line(p1, new vec2d(1, 0));
+			
+			var bottomLeft = new Point(0, game.height);
+			var topLeft = new Point (0, 0);
+			var topRight = new Point (game.width, 0);
+			var bottomRight = new Point (game.width, game.height);
+			
 			findCollision(p1, p2, wall);
+			findCollision(bottomRight, topRight, new vec2d(0, 1));
+			findCollision(topRight, topLeft, new vec2d(-1, 0));
+			findCollision(topLeft, bottomLeft, new vec2d(0, -1));
 		}
 		
 		
 		function findCollision(p1, p2, wall)
 		{
-			t = 0;
 			circle = new Circle(new Point(ballx,bally),16);
 			var newT = circleSegmentCollision(circle, wall, p1, p2, velocity.mul(-1)); // KEEP THE TIME POSITIVE
-			if ((newT < Number.POSITIVE_INFINITY) && (newT < 0))
+			if ((newT < T) && (newT < 0))
 			{
+				t = 0;
 				collisionWall = wall;
 				T = newT;
 			}
@@ -84,7 +93,8 @@
 			var py = velocity.y * n.y;
 			var P = new vec2d(px, py);
 			var v2 = velocity.add(P.mul(-2));
-			velocity = v2;
+			velocity = v2; /// THIS LINE IS SPECIAL IT CHANGES THE WAY THE BALL MOVES
+			///IF VELOCITY CHANGES WE NEED TO CHECK ALL 4 POSSIBLE OBJECTS FOR COLLISION
 		}
 		
 		var render = setInterval(function() 
