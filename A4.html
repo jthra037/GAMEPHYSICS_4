@@ -53,7 +53,8 @@
 		var recty = 670;
 		var oldx = rectx;
 		var oldy = recty;
-		 
+	
+		
 		function initCollision()
 		{
 			var p1 = new Point(rectx, recty);
@@ -69,10 +70,12 @@
 			circle = new Circle(new Point(ballx,bally),16);
 			var newT = circleSegmentCollision(circle, wall, p1, p2, velocity.mul(-1)); // KEEP THE TIME POSITIVE
 			if ((newT < Number.POSITIVE_INFINITY) && (newT < 0))
+			{
 				collisionWall = wall;
 				T = newT;
+			}
 		}
-		 
+	
 		function wallBounce()
 		{
 			t = 0;
