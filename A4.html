@@ -49,6 +49,17 @@
 		var recty = 670;
 		var oldx = rectx;
 		var oldy = recty;
+		 
+		 
+		function wallBounce(thisWall)
+		{
+			var n = thisWall.dirVec.perp();
+			var px = velocity.x * n.x;
+			var py = velocity.y * n.y;
+			var P = new vec2d(px, py);
+			var v2 = velocity.add(P.mul(-2));
+			velocity = v2;
+		}
 		
 		var render = setInterval(function() 
 		{
