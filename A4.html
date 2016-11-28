@@ -91,10 +91,29 @@
 	
 		function resolveCollision()
 		{
-			// if (collision with corner)
-			// corner collision
-			//else
+			findCornerTangent();
 			wallBounce();
+		}
+		
+		function findCornerTangent()
+		{
+			var ballPoint = new Point(ballx, game.height - bally);
+			var leftCorner = new Point(rectx, game.height - recty);
+			var rightCorner = new Point(rectx + rectImage.width, game.height - recty);
+			var left = new Vec(ballPoint, leftCorner);
+			var right = new Vec(ballPoint, rightCorner);
+			
+			
+			if (left.length() < 32.2)
+			{
+				collisionWall = new Line(leftCorner, left.perp());
+				return;
+			} else if (right.length() < 32.2)
+			{
+				collisionWall = new Line(rightCorner, right.perp());
+				return;
+			}
+			console.log("Not hitting a corner, don't do NUFFIN");
 		}
 	
 		function wallBounce()
@@ -110,7 +129,7 @@
 				var v2 = velocity.add(P.mul(2));
 			velocity = v2; /// THIS LINE IS SPECIAL IT CHANGES THE WAY THE BALL MOVES
 			///IF VELOCITY CHANGES WE NEED TO CHECK ALL 4 POSSIBLE OBJECTS FOR COLLISION
-			initCollision();
+			T = Number.POSITIVE_INFINITY;
 		}
 		
 		var render = setInterval(function() 
@@ -146,8 +165,8 @@
 			
 			if (t >= Math.abs(T))
 			{
-				T = Number.POSITIVE_INFINITY;
 				resolveCollision();
+				initCollision();
 			}
 			
 		}, vinity);
@@ -166,7 +185,7 @@
 						rectx = newx; 
 						oldx = rectx;
 						///THE PADDLE MOVED, FIND A NEW COLLISION TIME
-						T 
+						T = Number.POSITIVE_INFINITY;
 						initCollision();
 					}
 				}
