@@ -112,13 +112,16 @@
 			ballx = ballx + velocity.x;
 			//bally = 32 + (Math.random() * (game.height - 64));
 			if (bally >= game.height-32) {			//|| (ballx <= 32 ) || (ballx >= game.width-32)) {
-				//ballx = 32 + (Math.random() * (game.width - 64));
-				//bally = 32;
+				ballx = 32 + (Math.random() * (game.width - 64));
+				bally = 32;
 				///REPLACING vy AND vx WITH velocity VECTOR
-				//velocity = new vec2d(Math.random()-.5, vinity);
+				velocity = new vec2d(Math.random()-.5, vinity);
 				///THE BALL RESET, FIND A NEW COLLISION TIME
-				velocity.y *= -1;
+				//velocity.y *= -1;
 				initCollision();
+			} else if (ballx <= 0 || ballx >= game.width - 32)
+			{
+				velocity.x *= -1;
 			}
 		
 			if (bgReady) {
