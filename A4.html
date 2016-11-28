@@ -57,6 +57,7 @@
 		
 		function initCollision()
 		{
+			T = Number.POSITIVE_INFINITY;
 			// GET DATA FOR PLATFORM
 			var p1 = new Point(rectx, recty);
 			var p2 = new Point(rectx + rectImage.width, recty);
@@ -68,23 +69,26 @@
 			var bottomRight = new Point (game.width, game.height);
 			// CHECK EVERYTHING RIGHT NOW
 			findCollision(p1, p2, wall);
-			findCollision(bottomRight, topRight, new Line(bottomRight, new vec2d(0, 1)));
+			findCollision(bottomRight, topRight, new Line(bottomRight, new vec2d(0, 1)));// MISSING BECAUSE IT THINKS ITS MISSING THE POINTS
 			findCollision(topRight, topLeft, new Line(topRight , new vec2d(-1, 0)));
-			findCollision(topLeft, bottomLeft, new Line(topLeft , new vec2d(0, -1)));
+			findCollision(topLeft, bottomLeft, new Line(topLeft , new vec2d(0, -1))); // MISSING BECAUSE IT THINKS ITS MISSING THE POINTS
 		}
 		
 		
 		function findCollision(p1, p2, wall)
 		{
 			circle = new Circle(new Point(ballx,bally),16);
-			var newT = circleSegmentCollision(circle, wall, p1, p2, velocity.mul(-1)); // KEEP THE TIME POSITIVE
+			var properVelocity = new vec2d(velocity.x, -velocity.y);
+			var newT = circleSegmentCollision(circle, wall, p1, p2, properVelocity); // KEEP THE TIME POSITIVE
 			if ((newT < T) && (newT < 0))
 			{
 				t = 0;
 				collisionWall = wall;
 				T = newT;
 				console.log("Collision with " + wall + " in " + T);
+				return true;
 			}
+			return false;
 		}
 	
 		function wallBounce()
@@ -110,11 +114,12 @@
 			ballx = ballx + velocity.x;
 			//bally = 32 + (Math.random() * (game.height - 64));
 			if (bally >= game.height-32) {			//|| (ballx <= 32 ) || (ballx >= game.width-32)) {
-				ballx = 32 + (Math.random() * (game.width - 64));
-				bally = 32;
+				//ballx = 32 + (Math.random() * (game.width - 64));
+				//bally = 32;
 				///REPLACING vy AND vx WITH velocity VECTOR
-				velocity = new vec2d(Math.random()-.5, vinity);
+				//velocity = new vec2d(Math.random()-.5, vinity);
 				///THE BALL RESET, FIND A NEW COLLISION TIME
+				velocity.y *= -1;
 				initCollision();
 			}
 		
@@ -152,6 +157,7 @@
 						rectx = newx; 
 						oldx = rectx;
 						///THE PADDLE MOVED, FIND A NEW COLLISION TIME
+						T 
 						initCollision();
 					}
 				}
