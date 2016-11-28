@@ -89,6 +89,14 @@
 			}
 		}
 	
+		function resolveCollision()
+		{
+			// if (collision with corner)
+			// corner collision
+			//else
+			wallBounce();
+		}
+	
 		function wallBounce()
 		{
 			//t = 0;
@@ -139,7 +147,7 @@
 			if (t >= Math.abs(T))
 			{
 				T = Number.POSITIVE_INFINITY;
-				wallBounce(new Line(new Point(rectx, recty), new vec2d(1, 0)));
+				resolveCollision();
 			}
 			
 		}, vinity);
