@@ -83,17 +83,21 @@
 				t = 0;
 				collisionWall = wall;
 				T = newT;
+				console.log("Collision with " + wall + " in " + T);
 			}
 		}
 	
 		function wallBounce()
 		{
-			t = 0;
+			//t = 0;
 			var n = collisionWall.dirVec.perp();
 			var px = velocity.x * n.x;
 			var py = velocity.y * n.y;
 			var P = new vec2d(px, py);
-			var v2 = velocity.add(P.mul(-2));
+			if (velocity.y >= 0)
+				var v2 = velocity.add(P.mul(-2));
+			else
+				var v2 = velocity.add(P.mul(2));
 			velocity = v2; /// THIS LINE IS SPECIAL IT CHANGES THE WAY THE BALL MOVES
 			///IF VELOCITY CHANGES WE NEED TO CHECK ALL 4 POSSIBLE OBJECTS FOR COLLISION
 			initCollision();
@@ -105,7 +109,7 @@
 			bally = bally + velocity.y;
 			ballx = ballx + velocity.x;
 			//bally = 32 + (Math.random() * (game.height - 64));
-			if (bally >= game.height-32 || (ballx <= 32 ) || (ballx >= game.width-32)) {
+			if (bally >= game.height-32) {			//|| (ballx <= 32 ) || (ballx >= game.width-32)) {
 				ballx = 32 + (Math.random() * (game.width - 64));
 				bally = 32;
 				///REPLACING vy AND vx WITH velocity VECTOR
