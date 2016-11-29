@@ -1,6 +1,10 @@
 <!doctype html>
 <html>
-   <head></head>
+   <head>
+   <script src = "vector2d.js"></script>
+   <script src = "geom2d.js"></script>
+   <script src = "physics2d.js"></script>
+   </head>
    <body>
       <canvas id="game"></canvas>
 
@@ -17,63 +21,177 @@
 		var ballimage = new Image();
 		var rectImage = new Image();
 		var ballx,bally;
+		///REPLACING vy AND vx WITH velocity VECTOR
         var vinity = 2; // velocity along y axis
 		var vinitx = Math.random()-.5; // velocity along x axis
-		var vy = vinity;
-		var vx = vinitx;
+		var velocity = new vec2d(vinitx, vinity);
+		
+		var T = Number.POSITIVE_INFINITY;
+		var t = 0;
+		var collisionWall;
+		
 		var a = 0; // acceleration
         bgImage.src = "images/bg.jpg";
 		ballimage.src = "images/ball.png";
 		rectImage.src = "images/rectangle.png"
-        bgImage.onload = function () {
-           bgReady = true;
-        }
-		ballimage.onload = function () {
-           ballReady = true;
-        }
-		rectImage.onload = function()  {
-		   rectReady = true;
-		   
+		
+		bgImage.onload = function () {
+			bgReady = true;
 		}
+		
+		ballimage.onload = function () {
+			ballReady = true;
+		}
+		
+		rectImage.onload = function()  {
+			rectReady = true;
+		}
+		
 		bally = 32;
 		ballx = 32 + (Math.random() * (game.width - 64));
         var rectx = 500;
 		var recty = 670;
 		var oldx = rectx;
 		var oldy = recty;
-		var render = setInterval(function() {
-		   bally = bally + vy;
-		   ballx = ballx + vx;
-           //bally = 32 + (Math.random() * (game.height - 64));
-		   if (bally >= game.height-32 || (ballx <= 32 ) || (ballx >= game.width-32)) {
-		   	   ballx = 32 + (Math.random() * (game.width - 64));
-		       bally = 32;
-			   vy = vinity;
-			   vx = Math.random()-.5;
-		   }
-		   if (bgReady) {
-              ctx.drawImage(bgImage, 0, 0);
-           }
-           if (ballReady) {
-              ctx.drawImage(ballimage, ballx, bally);
-           }
-		   if (rectReady) {
-		      ctx.drawImage(rectImage, rectx, recty);
-		   }
-		   }, vinity);
+	
+		
+		function initCollision()
+		{
+			T = Number.POSITIVE_INFINITY;
+			// GET DATA FOR PLATFORM
+			var p1 = new Point(rectx, recty);
+			var p2 = new Point(rectx + rectImage.width, recty);
+			var wall = new Line(p1, new vec2d(1, 0));
+			// GET DATA FOR WALLS
+			var bottomLeft = new Point(0, game.height);
+			var topLeft = new Point (0, 0);
+			var topRight = new Point (game.width, 0);
+			var bottomRight = new Point (game.width, game.height);
+			// CHECK EVERYTHING RIGHT NOW
+			findCollision(p1, p2, wall);
+			findCollision(topRight, bottomRight, new Line(bottomRight, new vec2d(0, 1)));// MISSING BECAUSE IT THINKS ITS MISSING THE POINTS
+			findCollision(topRight, topLeft, new Line(topRight , new vec2d(-1, 0)));
+			findCollision(bottomLeft, topLeft, new Line(topLeft , new vec2d(0, -1))); // MISSING BECAUSE IT THINKS ITS MISSING THE POINTS
+		}
+		
+		
+		function findCollision(p1, p2, wall)
+		{
+			circle = new Circle(new Point(ballx,bally),16);
+			var properVelocity = new vec2d(velocity.x, -velocity.y);
+			var newT = circleSegmentCollision(circle, wall, p1, p2, properVelocity); // KEEP THE TIME POSITIVE
+			if ((newT < T) && (newT < 0))
+			{
+				t = 0;
+				collisionWall = wall;
+				T = newT;
+				console.log("Collision with " + wall + " in " + T);
+			}
+		}
+	
+		function resolveCollision()
+		{
+			findCornerTangent();
+			wallBounce();
+		}
+		
+		function findCornerTangent()
+		{
+			var ballPoint = new Point(ballx + circle.radius, game.height - bally);
+			var leftCorner = new Point(rectx, game.height - recty);
+			var rightCorner = new Point(rectx + rectImage.width, game.height - recty);
+			var left = new Vec(ballPoint, leftCorner);
+			var right = new Vec(ballPoint, rightCorner);
+			
+			
+			if ((left.length() < 32) && (ballPoint.x <= leftCorner.x))
+			{
+				collisionWall = new Line(leftCorner, left.perp());
+				return;
+			} else if ((right.length() < 32) && (ballPoint.x <= rightCorner.x))
+			{
+				collisionWall = new Line(rightCorner, right.perp());
+				return;
+			}
+			console.log("Not hitting a corner, don't do NUFFIN");
+		}
+	
+		function wallBounce()
+		{
+			//t = 0;
+			var n = collisionWall.dirVec.perp();
+			var px = velocity.x * n.x;
+			var py = velocity.y * n.y;
+			var P = new vec2d(px, py);
+			if (velocity.y >= 0)
+				var v2 = velocity.add(P.mul(-2));
+			else
+				var v2 = velocity.add(P.mul(2));
+			velocity = v2; /// THIS LINE IS SPECIAL IT CHANGES THE WAY THE BALL MOVES
+			///IF VELOCITY CHANGES WE NEED TO CHECK ALL 4 POSSIBLE OBJECTS FOR COLLISION
+
+			T = Number.POSITIVE_INFINITY;
+		}
+		
+		var render = setInterval(function() 
+		{
+			++t;
+			bally = bally + velocity.y;
+			ballx = ballx + velocity.x;
+			//bally = 32 + (Math.random() * (game.height - 64));
+			if (bally >= game.height-32) {			//|| (ballx <= 32 ) || (ballx >= game.width-32)) {
+				ballx = 32 + (Math.random() * (game.width - 64));
+				bally = 32;
+				///REPLACING vy AND vx WITH velocity VECTOR
+				velocity = new vec2d(Math.random()-.5, vinity);
+				///THE BALL RESET, FIND A NEW COLLISION TIME
+				//velocity.y *= -1;
+				initCollision();
+			} else if (ballx <= 0 || ballx >= game.width - 32)
+			{
+				velocity.x *= -1;
+			}
+		
+			if (bgReady) {
+				ctx.drawImage(bgImage, 0, 0);
+			}
+			
+			if (ballReady) {
+				ctx.drawImage(ballimage, ballx, bally);
+			}
+			
+			if (rectReady) {
+				ctx.drawImage(rectImage, rectx, recty);
+			}
+			
+			if (t >= Math.abs(T))
+			{
+				resolveCollision();
+				initCollision();
+			}
+			
+		}, vinity);
 		   
-		   window.onload = function() {
-		     document.onmousemove = function(e) {
-			   if (e.which == 1) {
-			       var newx = e.pageX;
-				   var newy = e.pageY;
-				   if(newy >= recty && newy <= recty+rectImage.height && newx >= 0 && newx <= rectx+rectImage.width) {
-					       rectx = newx; 
-						   oldx = rectx;
-				   }
-    }
-			 }
-		   }
+		window.onload = function() 
+		{
+			document.onmousemove = function(e) 
+			{
+				if (e.which == 1) 
+				{
+					var newx = e.pageX;
+					var newy = e.pageY;
+			
+					if(newx >= 0 && newx <= rectx+rectImage.width) 
+					{
+						rectx = newx; 
+						oldx = rectx;
+						///THE PADDLE MOVED, FIND A NEW COLLISION TIME
+						T = Number.POSITIVE_INFINITY;
+						initCollision();
+					}
+				}
+			}
+		}
       </script>
    </body>
 
