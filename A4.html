@@ -97,18 +97,18 @@
 		
 		function findCornerTangent()
 		{
-			var ballPoint = new Point(ballx, game.height - bally);
+			var ballPoint = new Point(ballx + circle.radius, game.height - bally);
 			var leftCorner = new Point(rectx, game.height - recty);
 			var rightCorner = new Point(rectx + rectImage.width, game.height - recty);
 			var left = new Vec(ballPoint, leftCorner);
 			var right = new Vec(ballPoint, rightCorner);
 			
 			
-			if (left.length() < 32.2)
+			if ((left.length() < 32) && (ballPoint.x <= leftCorner.x))
 			{
 				collisionWall = new Line(leftCorner, left.perp());
 				return;
-			} else if (right.length() < 32.2)
+			} else if ((right.length() < 32) && (ballPoint.x <= rightCorner.x))
 			{
 				collisionWall = new Line(rightCorner, right.perp());
 				return;
@@ -129,6 +129,7 @@
 				var v2 = velocity.add(P.mul(2));
 			velocity = v2; /// THIS LINE IS SPECIAL IT CHANGES THE WAY THE BALL MOVES
 			///IF VELOCITY CHANGES WE NEED TO CHECK ALL 4 POSSIBLE OBJECTS FOR COLLISION
+
 			T = Number.POSITIVE_INFINITY;
 		}
 		
